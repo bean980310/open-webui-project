@@ -22,7 +22,7 @@ services:
       args:
         OLLAMA_BASE_URL: '/ollama'
       dockerfile: Dockerfile.cuda
-    image: bean980310/open-webui:ollama
+    image: bean980310/open-webui:latest
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
