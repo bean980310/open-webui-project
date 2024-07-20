@@ -16,9 +16,10 @@ ARG BUILD_HASH=dev-build
 ARG UID=0
 ARG GID=0
 ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.3-cuda12.1.1-torch2.3.1
+ARG BUILD_IMAGE=node:21-alpine3.19
 
 ######## WebUI frontend ########
-FROM ${BASE_IMAGE} AS build
+FROM ${BUILD_IMAGE} AS build
 ARG BUILD_HASH
 
 WORKDIR /app
@@ -31,7 +32,7 @@ ENV APP_BUILD_HASH=${BUILD_HASH}
 RUN npm run build
 
 ######## WebUI backend ########
-FROM build AS base
+FROM ${BASE_IMAGE} AS base
 
 # Use args
 ARG USE_CUDA
