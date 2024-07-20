@@ -15,9 +15,10 @@ ARG BUILD_HASH=dev-build
 # Override at your own risk - non-root configurations are untested
 ARG UID=0
 ARG GID=0
+ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.3-cuda12.1.1-torch2.3.1
 
 ######## WebUI frontend ########
-FROM --platform=$BUILDPLATFORM node:21-alpine3.19 as build
+FROM ${BASE_IMAGE} AS build
 ARG BUILD_HASH
 
 WORKDIR /app
@@ -30,7 +31,7 @@ ENV APP_BUILD_HASH=${BUILD_HASH}
 RUN npm run build
 
 ######## WebUI backend ########
-FROM python:3.11-slim-bookworm as base
+FROM build AS base
 
 # Use args
 ARG USE_CUDA
@@ -80,18 +81,18 @@ WORKDIR /app/backend
 
 ENV HOME /root
 # Create user and group if not root
-RUN if [ $UID -ne 0 ]; then \
-    if [ $GID -ne 0 ]; then \
-    addgroup --gid $GID app; \
+RUN if [ ${UID} -ne 0 ]; then \
+    if [ ${GID} -ne 0 ]; then \
+    addgroup --gid ${GID} app; \
     fi; \
-    adduser --uid $UID --gid $GID --home $HOME --disabled-password --no-create-home app; \
+    adduser --uid ${UID} --gid ${GID} --home ${HOME} --disabled-password --no-create-home app; \
     fi
 
-RUN mkdir -p $HOME/.cache/chroma
-RUN echo -n 00000000-0000-0000-0000-000000000000 > $HOME/.cache/chroma/telemetry_user_id
+RUN mkdir -p ${HOME}/.cache/chroma
+RUN echo -n 00000000-0000-0000-0000-000000000000 > ${HOME}/.cache/chroma/telemetry_user_id
 
 # Make sure the user has access to the app and root directory
-RUN chown -R $UID:$GID /app $HOME
+RUN chown -R ${UID}:${GID} /app ${HOME}
 
 RUN if [ "$USE_OLLAMA" = "true" ]; then \
     apt-get update && \
@@ -123,7 +124,7 @@ COPY --chown=$UID:$GID ./backend/requirements.txt ./requirements.txt
 RUN pip3 install uv && \
     if [ "$USE_CUDA" = "true" ]; then \
     # If you use CUDA the whisper and embedding model will be downloaded on first use
-    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/$USE_CUDA_DOCKER_VER --no-cache-dir && \
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/${USE_CUDA_DOCKER_VER} --no-cache-dir && \
     uv pip install --system -r requirements.txt --no-cache-dir && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
@@ -133,7 +134,7 @@ RUN pip3 install uv && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
     fi; \
-    chown -R $UID:$GID /app/backend/data/
+    chown -R ${UID}:${GID} /app/backend/data/
 
 
 
