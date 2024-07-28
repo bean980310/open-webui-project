@@ -4,7 +4,7 @@
 ARG USE_CUDA=true
 ARG USE_OLLAMA=true
 # Tested with cu117 for CUDA 11 and cu121 for CUDA 12 (default)
-ARG USE_CUDA_VER=cu121
+ARG USE_CUDA_VER=cu124
 # any sentence transformer model; models to use can be found at https://huggingface.co/models?library=sentence-transformers
 # Leaderboard: https://huggingface.co/spaces/mteb/leaderboard 
 # for better performance and multilangauge support use "intfloat/multilingual-e5-large" (~2.5GB) or "intfloat/multilingual-e5-base" (~1.5GB)
@@ -15,7 +15,7 @@ ARG BUILD_HASH=dev-build
 # Override at your own risk - non-root configurations are untested
 ARG UID=0
 ARG GID=0
-ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.3-cuda12.1.1-torch2.3.1
+ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.4-cuda12.5.1-torch2.4.0
 ARG BUILD_IMAGE=node:21-alpine3.19
 
 ######## WebUI frontend ########
