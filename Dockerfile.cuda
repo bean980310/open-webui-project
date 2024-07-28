@@ -15,7 +15,7 @@ ARG BUILD_HASH=dev-build
 # Override at your own risk - non-root configurations are untested
 ARG UID=0
 ARG GID=0
-ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.4-cuda12.5.1-torch2.4.0
+ARG BASE_IMAGE=bean980310/ubuntu-docker:1.0.5-cuda12.5.1-torch2.4.0
 ARG BUILD_IMAGE=node:21-alpine3.19
 
 ######## WebUI frontend ########
