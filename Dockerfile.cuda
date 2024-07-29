@@ -97,9 +97,7 @@ RUN chown -R ${UID}:${GID} /app ${HOME}
 
 RUN if [ "$USE_OLLAMA" = "true" ]; then \
     # install ollama
-    curl -fsSL https://ollama.com/install.sh | sh && \
-    # cleanup
-    rm -rf /var/lib/apt/lists/*; \
+    curl -fsSL https://ollama.com/install.sh | sh ; \
     fi
 
 # install python dependencies
