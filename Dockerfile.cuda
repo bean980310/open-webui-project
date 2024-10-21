@@ -117,7 +117,7 @@ RUN if [ "$USE_OLLAMA" = "true" ]; then \
     apt-get install -y --no-install-recommends ffmpeg libsm6 libxext6 && \
     # cleanup
     rm -rf /var/lib/apt/lists/*; \
-    fi; \
+    fi;
 
 # install python dependencies
 COPY --chown=$UID:$GID ./backend/requirements.txt ./requirements.txt
